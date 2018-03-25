@@ -1,0 +1,27 @@
+\usepackage{tikz}
+\usepackage{mathtools}
+
+% Surrounding symbols
+\DeclarePairedDelimiter{\set}{\{}{\}}
+\DeclarePairedDelimiter{\parens}{(}{)}
+\DeclarePairedDelimiter{\chevrons}{\langle}{\rangle}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+% tikz
+\tikzstyle{point}=[shape=circle, fill=black, inner sep=2pt]
+\newcommand{\leftstate}[3][]{%
+  \path (#2) to node[draw, left, #1]{#3} ++(0, 0);
+}
+\newcommand{\rightstate}[3][]{%
+  \path (#2) to node[draw, right, #1]{#3} ++(0, 0);
+}
+\newcommand{\aboverightmessage}[3]{%
+  \draw (#1) to node[above right, inner sep=0pt]{#3} (#2);
+}
+\newcommand{\aboveleftmessage}[3]{%
+  \draw (#1) to node[above left, inner sep=0pt]{#3} (#2);
+}
+\newcommand{\belowleftmessage}[3]{%
+  \draw (#1) to node[below left, inner sep=0pt]{#3} (#2);
+}

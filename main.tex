@@ -1,0 +1,21 @@
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{pdflscape}
+\usepackage{pervasives}
+\usepackage{tikz}
+
+\begin{document}
+  \begin{center}
+    \huge TAPIR Diagrams
+  \end{center}
+
+  \section*{Inconsistent Operations}
+  {\centering \input{inconsistent.fig}}
+  \section*{Consensus Operations}
+  {\centering \input{consensus.fig}}
+  \begin{landscape}
+    \section*{View Changes}
+    {\centering \input{viewchange.fig}}
+  \end{landscape}
+\end{document}

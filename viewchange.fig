@@ -1,0 +1,61 @@
+\newcommand{\ttt}[1]{\texttt{#1}}
+\newcommand{\DO}{\ttt{DoViewChangeMessage}}
+\newcommand{\START}{\ttt{StartViewMessage}}
+
+\begin{figure}[ht]
+  \footnotesize
+  \begin{tikzpicture}[xscale=2, yscale=1.5]
+    \node[point] (a) at (1, 4) {};
+    \node[point] (b) at (0, 3) {};
+    \node[point] (c) at (2, 3) {};
+    \node[point] (d) at (0, 1) {};
+    \node[point] (e) at (1, 0) {};
+    \node[point] (f) at (2, 0) {};
+
+    \path(a) to node[draw]{Replica 0} ++(0, 0.5);
+    \path(b) to node[draw]{Replica 1} ++(0, 2.5);
+    \path(c) to node[draw]{Replica 2} ++(0, 2.5);
+
+    \aboveleftmessage{a}{b}{$
+      \begin{aligned}
+        \chevrons{\DO, \ttt{replicaIdx}, \ttt{record}, \ttt{new\_view}, \ttt{latest\_normal\_view}}& \\
+        \chevrons{\DO, 1, \set{\ldots}, 3, 2}&
+      \end{aligned}
+    $}
+
+    \aboverightmessage{a}{c}{$
+      \begin{aligned}
+        &\chevrons{\DO, \ttt{replicaIdx}, \ttt{record}, \ttt{new\_view}, \ttt{latest\_normal\_view}} \\
+        &\chevrons{\DO, 1, \bot, 3, 2}
+      \end{aligned}
+    $}
+
+    \leftstate{b}{Wait for $f$ other \DO{} messages.}
+    \rightstate{c}{Broadcast \DO{} messages.}
+
+    \aboveleftmessage{c}{d}{$
+      \begin{aligned}
+        \chevrons{\DO, \ttt{replicaIdx}, \ttt{record}, \ttt{new\_view}, \ttt{latest\_normal\_view}}& \\
+        \chevrons{\DO, 2, \set{\ldots}, 3, 2}&
+      \end{aligned}
+    $}
+
+    \leftstate[text width=7cm]{d}{%
+      Wait for $f$ other \DO{} messages; then sync and merge.
+    }
+
+    \belowleftmessage{d}{e}{$
+      \begin{aligned}
+        \chevrons{\START, \ttt{record}, \ttt{new\_view}}& \\
+        \chevrons{\START, \set{\ldots}, 3}&
+      \end{aligned}
+    $}
+
+    \aboverightmessage{d}{f}{$
+      \begin{aligned}
+        &\chevrons{\START, \ttt{record}, \ttt{new\_view}} \\
+        &\chevrons{\START, \set{\ldots}, 3}
+      \end{aligned}
+    $}
+  \end{tikzpicture}
+\end{figure}

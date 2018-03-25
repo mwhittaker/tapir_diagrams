@@ -1,0 +1,65 @@
+\newcommand{\ttt}[1]{\texttt{#1}}
+\newcommand{\PI}{\ttt{ProposeInconsistentMessage}}
+\newcommand{\RI}{\ttt{ReplyInconsistentMessage}}
+\newcommand{\FI}{\ttt{FinalizeInconsistentMessage}}
+\newcommand{\C}{\ttt{ConfirmMessage}}
+
+\begin{figure}[ht]
+  \footnotesize
+  \begin{tikzpicture}[xscale=2, yscale=1.5]
+    \node[point] (a) at (0, 4) {};
+    \node[point] (b) at (2, 3) {};
+    \node[point] (c) at (0, 2) {};
+    \node[point] (d) at (2, 1) {};
+    \node[point] (e) at (0, 0) {};
+
+    \path(a) to node[draw]{Client $a$} ++(0, 0.5);
+    \path(b) to node[draw]{Replica $3$} ++(0, 2.5);
+
+    \aboverightmessage{a}{b}{$
+      \begin{aligned}
+        &\chevrons{\PI, \ttt{clientid}, \ttt{clientreqid}, \ttt{op}} \\
+        &\chevrons{\PI, a, 42, \ttt{x:=1}}
+      \end{aligned}
+    $}
+
+    \rightstate{b}{$
+      \begin{aligned}
+       &\chevrons{\ttt{view}, \ttt{opid}, \ttt{type}, \ttt{state}, \ttt{request}, \ttt{result}} \\
+       &\chevrons{0, (a, 42), \ttt{Inconsistent}, \ttt{Tentative}, \ttt{x:=1}, \bot}
+      \end{aligned}
+    $}
+
+    \aboveleftmessage{b}{c}{$
+      \begin{aligned}
+        \chevrons{\RI, \ttt{view}, \ttt{opid}, \ttt{replicaIdx}} & \\
+        \chevrons{\RI, 0, (a, 42), 3} &
+      \end{aligned}
+    $} (c);
+
+    \leftstate{c}{%
+      After receiving $f + 1$ replies with the same view.
+    }
+
+    \aboverightmessage{c}{d}{$
+      \begin{aligned}
+        &\chevrons{\FI, \ttt{opid} } & \\
+        &\chevrons{\FI, (a, 42)}
+      \end{aligned}
+    $}
+
+    \rightstate{d}{$
+      \begin{aligned}
+       &\chevrons{\ttt{view}, \ttt{opid}, \ttt{type}, \ttt{state}, \ttt{request}, \ttt{result}} \\
+       &\chevrons{0, (a, 42), \ttt{Inconsistent}, \ttt{Finalized}, \ttt{x:=1}, \bot}
+      \end{aligned}
+    $}
+
+    \aboveleftmessage{d}{e}{$
+      \begin{aligned}
+        \chevrons{\C, \ttt{view}, \ttt{opid}, \ttt{replicaIdx}} & \\
+        \chevrons{\C, 0, (a, 42), 3} &
+      \end{aligned}
+    $}
+  \end{tikzpicture}
+\end{figure}
